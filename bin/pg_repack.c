@@ -424,7 +424,6 @@ is_superuser(void)
 
 bool
 check_systemtables()
-
 {
 	PGresult	*query_result = NULL;
 	int	num;
@@ -454,11 +453,10 @@ check_systemtables()
 	{
 		if (PQntuples(query_result) >= 1)
 		{
+			CLEARPGRES(query_result); 
 			return true;
 		}
 	}
-
-	CLEARPGRES(query_result); 
 
 	return false;
 }
@@ -526,12 +524,6 @@ preliminary_checks(char *errbuf, size_t errsize){
 		if (errbuf)
 			snprintf(errbuf, errsize, "You must be a superuser to use %s",
 					 PROGRAM_NAME);
-		goto cleanup;
-	}
-
-	if (check_systemtables()) {
-		if (errbuf)
-			snprintf(errbuf, errsize, "For System Tables Use VACUUM FULL.");
 		goto cleanup;
 	}
 
@@ -621,6 +613,12 @@ is_requested_relation_exists(char *errbuf, size_t errsize){
 	StringInfoData	sql;
 	int				num_relations;
 	SimpleStringListCell   *cell;
+
+	if (check_systemtables()) {
+		if (errbuf)
+			snprintf(errbuf, errsize,"For System tables use VACUUM FULL.");
+		return false;
+	}
 
 	num_relations = simple_string_list_size(parent_table_list) +
 					simple_string_list_size(table_list);
