@@ -614,6 +614,7 @@ is_requested_relation_exists(char *errbuf, size_t errsize){
 	int				num_relations;
 	SimpleStringListCell   *cell;
 
+	/*Handling system tables to return meaningful error message*/
 	if (check_systemtables()) {
 		if (errbuf)
 			snprintf(errbuf, errsize,"For System tables use VACUUM FULL.");
