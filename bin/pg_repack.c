@@ -422,6 +422,10 @@ is_superuser(void)
 	return false;
 }
 
+ /*
+ * Check if the tables are System tables releated to pg_catalog or information_schema 
+ * throw a meaning full error to use VACUUM FULL for those tables.
+ */
 bool
 check_systemtables()
 {
